@@ -17,10 +17,9 @@ class ChatJoinRequestApprover(
     private val json: Json
 ) {
 
-    private fun checkApproveCondition(): Boolean = true
-
     fun processApproveRequest(approveRequest: ApproveChatJoinRequest): Boolean = runBlocking {
-        return@runBlocking when (checkApproveCondition()) {
+        // Убеждаемся про запрос поступил не от бота. В ином случае отклоняем запрос.
+        return@runBlocking when (!approveRequest.isBot) {
             true -> {
                 val result = botClient.approveChatJoinRequest(approveRequest).result
                 kafkaProducer.sendMessage(

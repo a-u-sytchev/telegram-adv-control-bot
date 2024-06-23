@@ -9,6 +9,8 @@ data class ApproveChatJoinRequest(
     val chatId: String,
     @SerialName("user_id")
     val userId: Long,
+    @SerialName("is_bot")
+    val isBot: Boolean,
     @SerialName("invite_link_name")
     val inviteLinkName: String
 )

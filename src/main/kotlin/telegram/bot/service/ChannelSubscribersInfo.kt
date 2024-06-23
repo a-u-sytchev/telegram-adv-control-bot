@@ -35,9 +35,4 @@ class ChannelSubscribersInfo(
             json.encodeToString(revision)
         )
     }
-
-    @KafkaListener(topics = ["subscriberApproved"], groupId = "telegrambot")
-    fun test(message: String) {
-        println(message)
-    }
 }

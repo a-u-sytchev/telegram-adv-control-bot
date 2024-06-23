@@ -19,7 +19,6 @@ class BotController(
 
     @PostMapping
     suspend fun getUpdates(@RequestBody body: String) {
-        logger.info(body)
         try {
             val update = json.decodeFromString<Update>(body)
             try {
