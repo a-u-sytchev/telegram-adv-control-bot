@@ -22,7 +22,7 @@
   * Выполняется проверка текущего статуса всех подписчиков из списка.
   * Затем в событиии `subscribersRevisionComplete` возвращается список подписчиков с актуальным статусом.
 
-### Структуры данных событий
+### Структуры событий
 Событие `subscriberApproved`:
 ```kotlin
 data class ApproveJoinRequestEvent(
@@ -50,10 +50,7 @@ data class Subscriber(
 data class SubscribersRevisionCompleteEvent(
   val subscribers: List<ChatMember>
 )
-```
 
-Структура `ChatMember`:
-```kotlin
 data class ChatMember(
     val status: ChatMemberStatus,
     val user: User
