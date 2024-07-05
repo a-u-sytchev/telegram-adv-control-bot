@@ -1,7 +1,7 @@
 # Telegram бот для контроля эффективности рекламы канала 
 
 ## Описание
-Бот помогает контролировать эффективность рекламных кампаний в Telegram, общаясь со внешними сервисами аналитики через шину событий (kafka) \
+Бот помогает контролировать эффективность рекламных кампаний в Telegram, общаясь со внешними сервисами аналитики через шину событий (kafka). Пример реализации такого внешнего сервиса https://github.com/a-u-sytchev/telegram-adv-control-bot-telegram-adv-subscribers-auditor. \
 \
 Контроль происходит по принципу регистрации новых подписчиков, с учетом рекламной кампании (имени ссылки), в рамках которой пришел подписчик. \
 \
@@ -15,7 +15,7 @@
 
 ### Функциональность
 * Обработка запросов подписки на канал:
-  * Подтвержение запроса подписки на канал или отказ, если запрос поступает от бота.
+  * Автоматическое подтвержение запроса подписки на канал или отказ, если запрос поступает от бота.
   * В случае подтверждения, генерируется событие `subscriberApproved` в шину, которое должно быть обработано сервисами аналитики.
 * Обработка запросов на ревизию подписчиков:
   * Отслеживается событие `subscribersRevision`, в шине, которое содержит список подписчиков для проверки.
@@ -26,10 +26,10 @@
 Событие `subscriberApproved`:
 ```kotlin
 data class ApproveJoinRequestEvent(
-    val timestamp: LocalDateTime,
-    val channelId: String,
-    val subscriberId: Long,
-    val inviteLinkName: String
+  val timestamp: LocalDateTime,
+  val channelId: String,
+  val subscriberId: Long,
+  val inviteLinkName: String
 )
 ```
 
@@ -40,20 +40,10 @@ data class SubscribersRevisionEvent(
 )
 
 data class Subscriber(
+  val id: Long,
   val subscriberId: Long,
-  val channelId: String
-)
-```
-
-Событие `subscribersRevisionComplete`:
-```kotlin
-data class SubscribersRevisionCompleteEvent(
-  val subscribers: List<ChatMember>
-)
-
-data class ChatMember(
-    val status: ChatMemberStatus,
-    val user: User
+  val channelId: String,
+  var status: ChatMemberStatus
 )
 
 enum class ChatMemberStatus {
@@ -64,6 +54,13 @@ enum class ChatMemberStatus {
   restricted,
   kicked
 }
+```
+
+Событие `subscribersRevisionComplete`:
+```kotlin
+data class SubscribersRevisionCompleteEvent(
+  val subscribers: List<Subscriber>
+)
 ```
 
 ## Подготовка к запуску

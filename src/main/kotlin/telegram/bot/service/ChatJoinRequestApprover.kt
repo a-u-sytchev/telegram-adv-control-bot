@@ -18,7 +18,6 @@ class ChatJoinRequestApprover(
 ) {
 
     fun processApproveRequest(approveRequest: ApproveChatJoinRequest): Boolean = runBlocking {
-        // Убеждаемся про запрос поступил не от бота. В ином случае отклоняем запрос.
         return@runBlocking when (!approveRequest.isBot) {
             true -> {
                 val result = botClient.approveChatJoinRequest(approveRequest).result
