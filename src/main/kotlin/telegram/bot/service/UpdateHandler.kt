@@ -17,7 +17,8 @@ class UpdateHandler(
                 update.chatJoinRequest.chat.id.toString(),
                 update.chatJoinRequest.userChatId,
                 update.chatJoinRequest.from.isBot,
-                update.chatJoinRequest.inviteLink.name
+                update.chatJoinRequest.inviteLink.name,
+                update.chatJoinRequest.from.languageCode!!
             )
             when(chatJoinRequestApprover.processApproveRequest(approveRequest)) {
                 true -> logger.info(

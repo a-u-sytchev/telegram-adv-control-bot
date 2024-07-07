@@ -9,5 +9,7 @@ data class User(
     @JsonNames("is_bot")
     val isBot: Boolean,
     @JsonNames("first_name")
-    val firstName: String?
+    val firstName: String?,
+    @JsonNames("language_code")
+    val languageCode: String?
 )

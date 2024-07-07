@@ -28,7 +28,8 @@ class ChatJoinRequestApprover(
                             LocalDateTime.now(),
                             approveRequest.chatId,
                             approveRequest.userId,
-                            approveRequest.inviteLinkName
+                            approveRequest.inviteLinkName,
+                            approveRequest.languageCode
                         )
                     )
                 )
