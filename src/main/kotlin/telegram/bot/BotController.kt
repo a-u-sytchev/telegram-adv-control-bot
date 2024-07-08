@@ -6,14 +6,14 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import telegram.bot.service.UpdateHandler
+import telegram.bot.service.update.UpdateDispatcher
 import telegram.bot.type.Update
 
 @RestController
 @RequestMapping("/")
 class BotController(
     private val json: Json,
-    private val updateHandler: UpdateHandler
+    private val updateDispatcher: UpdateDispatcher
 ) {
     private val logger = LoggerFactory.getLogger(BotController::class.java)
 
@@ -22,7 +22,7 @@ class BotController(
         try {
             val update = json.decodeFromString<Update>(body)
             try {
-                updateHandler.handleUpdate(update)
+                updateDispatcher.handleUpdate(update)
             } catch (error: Exception) {
                 logger.error("[${error.message}] Failed handle update: $update")
             }
