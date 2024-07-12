@@ -4,15 +4,16 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import telegram.bot.service.ChatJoinRequestApprover
 import telegram.bot.type.ApproveChatJoinRequest
-import telegram.bot.type.ChatJoinRequest
+import telegram.bot.type.Update
 
 @Service
 class ChatJoinRequestHandler(
     private val chatJoinRequestApprover: ChatJoinRequestApprover
-) {
+): TelegramUpdateHandler {
     private val logger = LoggerFactory.getLogger(ChatJoinRequestHandler::class.java)
 
-    fun handleUpdate(chatJoinRequest: ChatJoinRequest) {
+    override fun handleUpdate(update: Update) {
+        val chatJoinRequest = update.chatJoinRequest!!
         val approveRequest = ApproveChatJoinRequest(
             chatJoinRequest.chat.id.toString(),
             chatJoinRequest.userChatId,

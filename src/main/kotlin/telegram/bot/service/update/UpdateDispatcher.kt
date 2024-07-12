@@ -6,11 +6,11 @@ import telegram.bot.type.Update
 
 @Service
 class UpdateDispatcher(
-    private val chatJoinRequestHandler: ChatJoinRequestHandler
+    private val chatJoinRequestHandler: ChatJoinRequestHandler,
+    private val updateHandlerFactory: UpdateHandlerFactory
 ) {
     fun handleUpdate(update: Update) {
-        if (update.chatJoinRequest != null) {
-            chatJoinRequestHandler.handleUpdate(update.chatJoinRequest)
-        }
+        val updateHandler = updateHandlerFactory.getUpdateHandler(update)
+        updateHandler.handleUpdate(update)
     }
 }

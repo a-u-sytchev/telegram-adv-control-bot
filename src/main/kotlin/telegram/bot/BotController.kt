@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import telegram.bot.service.update.UpdateDispatcher
+import telegram.bot.service.update.error.UnknownTelegramUpdateException
 import telegram.bot.type.Update
 
 @RestController
@@ -23,8 +24,8 @@ class BotController(
             val update = json.decodeFromString<Update>(body)
             try {
                 updateDispatcher.handleUpdate(update)
-            } catch (error: Exception) {
-                logger.error("[${error.message}] Failed handle update: $update")
+            } catch (error: UnknownTelegramUpdateException) {
+                logger.error(error.message)
             }
         } catch (error: Exception) {
             logger.error("[${error.message}] Failed deserialize update: $body")
