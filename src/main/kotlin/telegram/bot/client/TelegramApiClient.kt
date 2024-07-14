@@ -1,5 +1,8 @@
 package telegram.bot.client
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.awaitBody
@@ -8,14 +11,12 @@ import telegram.bot.type.*
 
 @Service
 class TelegramApiClient(
-    private val telegramBotProperties: TelegramBotProperties
+    private val telegramBotProperties: TelegramBotProperties,
+    @Qualifier("telegramWebClient") private val client: WebClient
 ) {
-    private val client = WebClient.builder()
-        .baseUrl("https://api.telegram.org/bot${this.telegramBotProperties.token}/")
-        .build()
 
-    suspend fun approveChatJoinRequest(approveRequest: ApproveChatJoinRequest): TelegramApiResponse<Boolean> {
-        return this.client
+    suspend fun approveChatJoinRequest(approveRequest: ApproveChatJoinRequest): TelegramApiResponse<Boolean> = withContext(Dispatchers.IO) {
+        client
             .post()
             .uri("approveChatJoinRequest")
             .bodyValue(approveRequest)
@@ -23,8 +24,8 @@ class TelegramApiClient(
             .awaitBody()
     }
 
-    suspend fun declineChatJoinRequest(approveRequest: ApproveChatJoinRequest): TelegramApiResponse<Boolean> {
-        return this.client
+    suspend fun declineChatJoinRequest(approveRequest: ApproveChatJoinRequest): TelegramApiResponse<Boolean> = withContext(Dispatchers.IO) {
+        client
             .post()
             .uri("declineChatJoinRequest")
             .bodyValue(approveRequest)
@@ -32,8 +33,8 @@ class TelegramApiClient(
             .awaitBody()
     }
 
-    suspend fun getChatMember(chatMemberRequest: GetChatMember): TelegramApiResponse<ChatMember> {
-        return this.client
+    suspend fun getChatMember(chatMemberRequest: GetChatMember): TelegramApiResponse<ChatMember> = withContext(Dispatchers.IO) {
+        client
             .post()
             .uri("getChatMember")
             .bodyValue(chatMemberRequest)
@@ -41,12 +42,12 @@ class TelegramApiClient(
             .awaitBody()
     }
 
-    suspend fun registerWebhook(): TelegramApiResponse<Boolean> {
-        return this.client
+    suspend fun registerWebhook(): TelegramApiResponse<Boolean> = withContext(Dispatchers.IO) {
+        client
             .get()
             .uri {
                 builder -> builder.path("setWebhook")
-                    .queryParam("url", this.telegramBotProperties.webhook)
+                    .queryParam("url", telegramBotProperties.webhook)
                     .build()
             }
             .retrieve()

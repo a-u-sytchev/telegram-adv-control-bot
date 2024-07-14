@@ -1,6 +1,5 @@
 package telegram.bot.service
 
-import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.springframework.kafka.annotation.KafkaListener
@@ -18,16 +17,16 @@ class ChannelSubscribersInfo(
     private val kafkaProducer: KafkaProducer,
     private val json: Json
 ) {
-    private fun updateSubscriberStatus(subscriber: Subscriber): Subscriber = runBlocking {
+    private suspend fun updateSubscriberStatus(subscriber: Subscriber): Subscriber {
         val chatMember = botClient.getChatMember(
             GetChatMember(subscriber.channelId, subscriber.subscriberId)
         ).result
         subscriber.status = chatMember.status
-        return@runBlocking subscriber
+        return subscriber
     }
 
     @KafkaListener(topics = ["subscribersRevision"], groupId = "telegrambot")
-    fun getSubscribersRevision(message: String) {
+    suspend fun getSubscribersRevision(message: String) {
         val subscribers = json.decodeFromString<SubscribersRevisionEvent>(message).subscribers
         if (subscribers.isNotEmpty()) {
             val revision = SubscribersRevisionCompleteEvent(
